@@ -463,7 +463,7 @@ resource "google_project_iam_member" "pubsub" {
 
 # # Sleep for a few minutes to let Eventarc sync up
 resource "time_sleep" "wait_for_eventarc" {
-  create_duration = "180s"
+  create_duration = "300s"
   depends_on = [
     google_storage_bucket.provisioning_bucket,
     google_storage_bucket.raw_bucket,
