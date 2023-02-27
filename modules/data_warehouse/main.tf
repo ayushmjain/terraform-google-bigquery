@@ -467,7 +467,8 @@ resource "google_project_iam_member" "pubsub" {
   
 resource "google_eventarc_trigger" "primary" {
     name = "name"
-    location = "us-central1"
+    location = var.region
+    project = var.project_id
     matching_criteria {
         attribute = "type"
         value = "google.cloud.pubsub.topic.v1.messagePublished"
@@ -492,12 +493,13 @@ resource "google_eventarc_trigger" "primary" {
 
 resource "google_pubsub_topic" "foo" {
     name = "topic"
+    project = var.project_id
 }
 
 resource "google_cloud_run_service" "default" {
     name     = "eventarc-service"
     location = var.region
-
+    project = var.project_id
     metadata {
         namespace = var.project_id
     }
