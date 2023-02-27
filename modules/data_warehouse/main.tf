@@ -460,15 +460,74 @@ resource "google_project_iam_member" "pubsub" {
   role   = "roles/pubsub.publisher"
   member = "serviceAccount:${data.google_storage_project_service_account.gcs_account.email_address}"
 }
+  
+  
+  
+  
+  
+resource "google_eventarc_trigger" "primary" {
+    name = "name"
+    location = "us-central1"
+    matching_criteria {
+        attribute = "type"
+        value = "google.cloud.pubsub.topic.v1.messagePublished"
+    }
+    destination {
+        cloud_run_service {
+            service = google_cloud_run_service.default.name
+            region = var.region
+        }
+    }
+    labels = {
+        foo = "bar"
+    }
+    depends_on = [
+      google_storage_bucket.provisioning_bucket,
+      google_storage_bucket.raw_bucket,
+      google_project_iam_member.cloud_function_service_account_editor_role,
+      google_project_iam_member.pubsub,
+      google_cloud_run_service.default,
+    ]
+}
+
+resource "google_pubsub_topic" "foo" {
+    name = "topic"
+}
+
+resource "google_cloud_run_service" "default" {
+    name     = "eventarc-service"
+    location = var.region
+
+    metadata {
+        namespace = var.project_id
+    }
+
+    template {
+        spec {
+            containers {
+                image = "gcr.io/cloudrun/hello"
+                ports {
+                    container_port = 8080
+                }
+            }
+            container_concurrency = 50
+            timeout_seconds = 100
+        }
+    }
+
+    traffic {
+        percent         = 100
+        latest_revision = true
+    }
+}
+
+  
 
 # # Sleep for a few minutes to let Eventarc sync up
 resource "time_sleep" "wait_for_eventarc" {
-  create_duration = "900s"
+  create_duration = "180s"
   depends_on = [
-    google_storage_bucket.provisioning_bucket,
-    google_storage_bucket.raw_bucket,
-    google_project_iam_member.cloud_function_service_account_editor_role,
-    google_project_iam_member.pubsub,
+    google_eventarc_trigger.primary
   ]
 }
 
@@ -535,3 +594,10 @@ resource "google_storage_bucket_object" "startfile" {
   ]
 
 }
+  
+  
+  
+  
+  
+  
+  
