@@ -23,7 +23,7 @@ spec:
   source:
     repo: https://github.com/terraform-google-modules/terraform-google-bigquery
     sourceType: git
-  version: 5.4.2
+  version: 1.0.0
   actuationTool:
     type: Terraform
     version: '>= 0.13'
@@ -212,30 +212,16 @@ spec:
     default: []
     required: false
   outputs:
-  - name: bigquery_dataset
-    description: Bigquery dataset resource.
-  - name: bigquery_external_tables
-    description: Map of BigQuery external table resources being provisioned.
-  - name: bigquery_tables
-    description: Map of bigquery table resources being provisioned.
-  - name: bigquery_views
-    description: Map of bigquery view resources being provisioned.
-  - name: external_table_ids
-    description: Unique IDs for any external tables being provisioned
-  - name: external_table_names
-    description: Friendly names for any external tables being provisioned
-  - name: project
-    description: Project where the dataset and tables are created
-  - name: routine_ids
-    description: Unique IDs for any routine being provisioned
-  - name: table_ids
-    description: Unique id for the table being provisioned
-  - name: table_names
-    description: Friendly name for the table being provisioned
-  - name: view_ids
-    description: Unique id for the view being provisioned
-  - name: view_names
-    description: friendlyname for the view being provisioned
+  - name: env_vars
+    description: Exported environment variables
+    type:
+     - object
+     - BIGQUERY_DATASET: string
+       BIGQUERY_TABLES: string
+       BIGQUERY_VIEWS: string
+       BIGQUERY_MATERIALIZED_VIEWS: string
+       BIGQUERY_EXTERNAL_TABLES: string
+       BIGQUERY_ROUTINES: string
   roles:
   - level: Project
     roles:
