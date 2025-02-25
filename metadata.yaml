@@ -10,7 +10,7 @@ spec:
     source:
       repo: https://github.com/ayushmjain/terraform-google-bigquery.git
       sourceType: git
-    version: 1.0.1
+    version: 1.0.2
     actuationTool:
       flavor: Terraform
       version: ">= 0.13"
